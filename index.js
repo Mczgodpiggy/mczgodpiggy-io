@@ -10,77 +10,72 @@ app.listen(port, () =>
 	console.log(`Example app listening at http://localhost:${port}`)
 );
 
-// ================= START BOT CODE ===================
-// Import the discord.js module
-const Discord = require('discord.js');
+// ================= server ends here ===================
 
-// Create an instance of a Discord client
-const client = new Discord.Client();
+const Discord = require('discord.js');
+const MessageEmbed = require('discord.js');
+const talkedRecently = new Set();
+
+const client = new Discord.Client({
+ presence: {
+  status: 'dnd',
+  activity: {
+   name: 'bot maked by 𝔇ℜ𝔄𝔊𝔒𝔑ℌ𝔘𝔑𝔗𝔈ℜ-𝔪𝔠𝔷𝔤𝔬𝔡𝔭𝔦𝔤𝔤𝔶|see our website on https://website.mczgodpiggy.repl.co|bot version:BETA 1.6',
+   type: 'PLAYING',
+  },
+ },
+});
 var prefix = 'MCZ';
 
 
 
 client.on("ready", () =>{
     console.log(`Logged in as ${client.user.tag}!`);
-    client.user.setPresence({
-  game:{
-    name:`bot maked by 𝔇ℜ𝔄𝔊𝔒𝔑ℌ𝔘𝔑𝔗𝔈ℜ-𝔪𝔠𝔷𝔤𝔬𝔡𝔭𝔦𝔤𝔤𝔶|see our website on https://website.mczgodpiggy.repl.co|bot version:BETA 1.4`,
-  },
-  status:'dnd'
-});
-});
-
-
-client.on('message', msg => {
-  if (msg.content === 'MCZ servers') {
-    if (msg.author.bot) return;
-    msg.channel.send(`<a:check:850724870282674189>bot is in ${client.guilds.cache.size} servers<a:check:850724870282674189><a:nitro:730356764243132436>
-    can you guys invite me?? https://top.gg/bot/695922492027568176 <= here invite me`);
-    
-  }
 });
 
 
 
-client.on('message', async message => {
+
+
+client.on('message', async (message, args) => {
 
   if (!message.guild) return;
   if (message.author.bot) return;
   if (message.content.startsWith('MCZ kick')) {
-     if (!message.member.hasPermission('KICK_MEMBERS')) return message.reply('you can not kick members because you don\'t have **kick members** perm');
-     const args = message.content.slice(prefix.length).trim().split(/ +/g);
+    if (!message.member.hasPermission('KICK_MEMBERS')) return message.reply('you can not kick members because you don\'t have **kick members** perm');
+    if (!message.guild.me.hasPermission('KICK_MEMBERS')) return message.reply('I can not kick members because i don\'t have **kick members** perm');
+    const args = message.content.slice(prefix.length).trim().split(/ +/g);
     const guildname = message.guild.name;
+    
 
     let reason = args.slice(2).join(' ');
-    const user = message.mentions.users.first();
+    let user = message.mentions.users.first();
     if (!user) return message.reply("You didn't mention the user to kick!")
+    if(message.author.id === user.id) return message.channel.send("bruh, why would you want to kick yourself")
+    
     if (!reason) return message.reply("you didn't provide a reason to kick the member please enter a vaild reason to kick the member")
-
+    if (user.id === client.user.id) return message.reply("i can't kick my self")
+    if (user.id === message.guild.owner.id) return message.reply("you can't kick guild owner")
+    if(message.mentions.members.first().roles.highest.position > message.guild.members.resolve(client.user).roles.highest.position || message.mentions.members.first().roles.highest.position === message.guild.members.resolve(client.user).roles.highest.position)
+    return message.reply("I was unable to kick the member because the bot's role is lower then the user you want to kick's role");
+    
+    
     if (user) {
-
+      
       const member = message.guild.member(user);
-
       if (member) {
 
         member
-          .send(`you've been kicked from ${guildname} because of the reason ${reason}`)
-          .then(() => {
-          member.kick(reason)
-          message.reply(`<a:check:850724870282674189>Successfully kicked ${user.tag}<a:check:850724870282674189> reason is ${reason}`);
-          })
-          .catch(err => {
-
-            message.reply(`I was unable to kick the member or your trying to kick a server owner/admin/mod/staff error is ${err}`);
-
-            console.error(err);
-          });
-      } else {
-
-        message.reply("That user isn't in this guild!");
-      }
+        .kick({reason})
+          .catch(err => console.log(err))
+          .then(message.reply(`<a:check:850724870282674189>Successfully kicked ${user.tag}<a:check:850724870282674189> reason is ${reason}`))
+      }  
+        
+        
       
     } else {
-      message.reply("You didn't mention the user to kick!");
+
+      message.reply("That user isn't in this guild!");
     }
   }
 });
@@ -93,39 +88,38 @@ client.on('message', async (message, args) => {
   if (message.author.bot) return;
   if (message.content.startsWith('MCZ ban')) {
     if (!message.member.hasPermission('BAN_MEMBERS')) return message.reply('you can not ban members because you don\'t have **ban members** perm');
+    if (!message.guild.me.hasPermission('BAN_MEMBERS')) return message.reply('I can not ban members because i don\'t have **ban members** perm');
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
     const guildname = message.guild.name;
-    // Assuming we mention someone in the message, this will return the user
+    
+
     let reason = args.slice(2).join(' ');
-    const user = message.mentions.users.first();
+    let user = message.mentions.users.first();
     if (!user) return message.reply("You didn't mention the user to ban!")
+    if(message.author.id === user.id) return message.channel.send("bruh, why would you want to ban yourself")
+    
     if (!reason) return message.reply("you didn't provide a reason to ban the member please enter a vaild reason to ban the member")
-    // If we have a user mentioned
+    if (user.id === client.user.id) return message.reply("i can't ban my self")
+    if (user.id === message.guild.owner.id) return message.reply("you can't ban guild owner")
+    if(message.mentions.members.first().roles.highest.position > message.guild.members.resolve(client.user).roles.highest.position || message.mentions.members.first().roles.highest.position === message.guild.members.resolve(client.user).roles.highest.position)
+    return message.reply("I was unable to ban the member because the bot's role is lower then the user you want to ban's role");
+    
     if (user) {
-      // Now we get the member from the user
+      
       const member = message.guild.member(user);
-      // If the member is in the guild
       if (member) {
 
         member
-          .send(`you've been banned from ${guildname} because of the reason ${reason}`)
-          .then(() => {
-          member.ban({days: 7, reason})
-          message.reply(`<a:check:850724870282674189>Successfully banned ${user.tag}<a:check:850724870282674189> reason is ${reason}`);
-          })
-          .catch(err => {
-
-            message.reply(`I was unable to ban the member or your trying to ban a server owner/admin/mod/staff error is ${err}`);
-
-            console.error(err);
-          });
-      } else {
-
-        message.reply("That user isn't in this guild!");
-      }
+        .kick({reason})
+          .catch(err => console.log(err))
+          .then(message.reply(`<a:check:850724870282674189>Successfully banned ${user.tag}<a:check:850724870282674189> reason is ${reason}`))
+      }  
+        
+        
+      
     } else {
 
-      message.reply("You didn't mention the user to ban!");
+      message.reply("That user isn't in this guild!");
     }
   }
 });
@@ -139,7 +133,20 @@ client.on('message', async (message, args) => {
 client.on('message', message => {
   if (message.content === 'MCZ ping') {  
     if (message.author.bot) return;
-    message.channel.send(`<a:check:850724870282674189>🏓Latency is ${Date.now() - message.createdTimestamp}ms. API Latency is ${Math.round(client.ws.ping)}ms {this is host 1}<a:check:850724870282674189>`);
+    if (talkedRecently.has(message.author.id)) {
+            return;
+    } else {
+
+           
+
+        
+          message.channel.send(`<a:check:850724870282674189>🏓Latency is ${Date.now() - message.createdTimestamp}ms. API Latency is ${Math.round(client.ws.ping)}ms {this is host 1}<a:check:850724870282674189>`);
+        talkedRecently.add(message.author.id);
+        setTimeout(() => {
+          
+          talkedRecently.delete(message.author.id);
+        }, 60000);
+    }
   }
 });
 
@@ -181,7 +188,7 @@ client.on('message', (message) => {
         });
     }
 
-    // add an extra to delete the current message too
+    
     const amount = Number(input) > 100
       ? 101
       : Number(input) + 1;
@@ -189,8 +196,7 @@ client.on('message', (message) => {
     message.channel.bulkDelete(amount, true)
     .then((_message) => {
       message.channel
-        // do you want to include the current message here?
-        // if not it should be ${_message.size - 1}
+        
         .send(`<a:check:850724870282674189>Bot cleared \`${_message.size}\` messages :broom:<a:check:850724870282674189><a:nitro:730356764243132436>`)
         .then((sent) => {
           setTimeout(() => {
@@ -250,8 +256,8 @@ client.on('message', msg => {
 	if (msg.content === 'MCZ air') {
     if (msg.author.bot) return;
     msg.channel.startTyping();
-    msg.reply(
-			'|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||');
+    msg.channel.send(
+			'**                                            **');
       msg.channel.stopTyping();
 	}
 });
@@ -260,14 +266,17 @@ client.on('message', msg => {
 
 
 client.on('guildMemberAdd', member => {
-  // Send the message to a designated channel on a server:
-  const channel = member.guild.channels.cache.find(ch => ch.name === 'welcome');
-  // Do nothing if the channel wasn't found on this server
+  
+  const channel = member.guild.channels.cache.find(ch => ch.name.includes('welcome'));
+  
   if (!channel) return;
-  // Send the message, mentioning the member
-  channel.send(`<a:check:850724870282674189>Welcome to the server, ${member}<a:check:850724870282674189><a:welcomenew:854934498454405140>`);
+  const joinembed = new Discord.MessageEmbed()
+  .setAuthor(client.user.tag, client.user.displayAvatarURL({ dynamic: true}))
+  .setTitle(`<a:check:850724870282674189>**${member.displayName} joined**<a:check:850724870282674189>`)
+  .setColor("GOLD")
+  .setDescription(`<a:check:850724870282674189>**${member} has joined now ${member.guild.name} have ${member.guild.memberCount} members**<a:check:850724870282674189>`)
+  .setFooter(client.user.tag, client.user.displayAvatarURL({ dynamic: true}))
+  channel.send(joinembed);
 });
-// You really don't want your token here since your repl's code
-// is publically available. We'll take advantage of a Repl.it
-// feature to hide the token we got earlier.
+
 client.login(process.env.DISCORD_TOKEN);
