@@ -18,15 +18,16 @@ const talkedRecently = new Set();
 
 const client = new Discord.Client({
  presence: {
-  status: 'dnd',
   activity: {
-   name: 'bot maked by 𝔇ℜ𝔄𝔊𝔒𝔑ℌ𝔘𝔑𝔗𝔈ℜ-𝔪𝔠𝔷𝔤𝔬𝔡𝔭𝔦𝔤𝔤𝔶|see our website on https://website.mczgodpiggy.repl.co|bot version:BETA 1.6',
+  status: "dnd",
+   name: 'bot made by 𝔇ℜ𝔄𝔊𝔒𝔑ℌ𝔘𝔑𝔗𝔈ℜ-𝔪𝔠𝔷𝔤𝔬𝔡𝔭𝔦𝔤𝔤𝔶|see our website on https://website.mczgodpiggy.repl.co|bot version:BETA 1.6',
    type: 'PLAYING',
   },
  },
 });
 var prefix = 'MCZ';
-
+const disbut = require('discord-buttons');
+disbut(client);
 
 
 client.on("ready", () =>{
@@ -210,23 +211,28 @@ client.on('message', (message) => {
 });
 
 client.on('message', msg => {
-	if (msg.content === 'MCZ inv') {
-		if (msg.author.bot) return;
-    msg.channel.startTyping();
-    msg.channel.send('<a:check:850724870282674189>https://discord.com/oauth2/authorize?client_id=695922492027568176&permissions=4265607167&scope=bot<a:check:850724870282674189>');
-    msg.channel.stopTyping();
-	}
-});
-
-client.on('message', msg => {
 	if (msg.content === 'MCZ invite') {
+    let addbot = new disbut.MessageButton()
+        .setStyle('url')
+        .setLabel('add 𝔪𝔠𝔷𝔤𝔬𝔡𝔭𝔦𝔤𝔤𝔶.𝓘𝓞 to your servers') 
+        .setURL("https://top.gg/bot/695922492027568176")
+    const inviteembed = new Discord.MessageEmbed()
+    .setTitle(`add ${client.user.tag}`)
+    .setAuthor(client.user.tag, client.user.displayAvatarURL())
+    .setDescription(`add ${client.user.tag} to your servers`)
+    .addField(`add ${client.user.tag}`, "[click here](https://top.gg/bot/599050023669334037)")
 		msg.channel.startTyping();
-    msg.channel.send('<a:check:850724870282674189>https://discord.com/oauth2/authorize?client_id=695922492027568176&permissions=4265607167&scope=bot<a:check:850724870282674189>');
+    msg.channel.send(inviteembed, addbot);
     msg.channel.stopTyping();
 	}
 });
 
-
+client.on('message', async message => {
+  if (message.channel.name.includes("poll")) {
+    if (message.author.bot) return;
+    message.react("<a:check:850724870282674189>").then(message.react("<a:check_no:867066462027907072>")).catch()
+  }
+})
 
 client.on('message', msg => {
 	if (msg.content === 'MCZ ...') {
@@ -278,5 +284,4 @@ client.on('guildMemberAdd', member => {
   .setFooter(client.user.tag, client.user.displayAvatarURL({ dynamic: true}))
   channel.send(joinembed);
 });
-
 client.login(process.env.DISCORD_TOKEN);
