@@ -272,6 +272,7 @@ client.on('message', msg => {
 
 
 client.on('guildMemberAdd', member => {
+  if (member.guild.id === "873937627039010816") return
   
   const channel = member.guild.channels.cache.find(ch => ch.name.includes('welcome'));
   
