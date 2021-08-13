@@ -168,6 +168,12 @@ client.on('message', (message) => {
           "You cant use this command since you're missing `manage_messages` perm",
         );
     }
+    if (!message.guild.me.hasPermission('MANAGE_MESSAGES')) {
+      return message.channel
+        .send(
+          "i can't clear message since i'm missing `manage_messages` perm",
+        );
+    }
 
     if (isNaN(input)) {
       return message.channel
