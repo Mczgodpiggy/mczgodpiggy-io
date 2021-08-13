@@ -20,7 +20,7 @@ const client = new Discord.Client({
  presence: {
   activity: {
   status: "dnd",
-   name: 'bot made by 𝔇ℜ𝔄𝔊𝔒𝔑ℌ𝔘𝔑𝔗𝔈ℜ-𝔪𝔠𝔷𝔤𝔬𝔡𝔭𝔦𝔤𝔤𝔶|see our website on https://website.mczgodpiggy.repl.co|bot version:BETA 1.6',
+   name: 'bot made by 𝔇ℜ𝔄𝔊𝔒𝔑ℌ𝔘𝔑𝔗𝔈ℜ-𝔪𝔠𝔷𝔤𝔬𝔡𝔭𝔦𝔤𝔤𝔶|see our website on https://website.mczgodpiggy.repl.co|bot version:BETA 1.8',
    type: 'PLAYING',
   },
  },
