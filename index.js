@@ -11,7 +11,7 @@ app.listen(port, () =>
 );
 
 // ================= server ends here ===================
-
+const { Statcord, statcord} = require("statcord.js");
 const Discord = require('discord.js');
 const MessageEmbed = require('discord.js');
 const talkedRecently = new Set();
@@ -24,7 +24,9 @@ const client = new Discord.Client({
    type: 'PLAYING',
   },
  },
-});
+},
+{ shardCount: 'auto' }
+);
 var prefix = 'MCZ';
 const disbut = require('discord-buttons');
 disbut(client);
@@ -39,10 +41,12 @@ client.on("ready", () =>{
 
 
 client.on('message', async (message, args) => {
+  
 
   if (!message.guild) return;
   if (message.author.bot) return;
   if (message.content.startsWith('MCZ kick')) {
+    statcord.postCommand("kick", message.author.id);
     if (!message.member.hasPermission('KICK_MEMBERS')) return message.reply('you can not kick members because you don\'t have **kick members** perm');
     if (!message.guild.me.hasPermission('KICK_MEMBERS')) return message.reply('I can not kick members because i don\'t have **kick members** perm');
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
@@ -88,6 +92,7 @@ client.on('message', async (message, args) => {
   if (!message.guild) return;
   if (message.author.bot) return;
   if (message.content.startsWith('MCZ ban')) {
+    statcord.postCommand("ban", message.author.id);
     if (!message.member.hasPermission('BAN_MEMBERS')) return message.reply('you can not ban members because you don\'t have **ban members** perm');
     if (!message.guild.me.hasPermission('BAN_MEMBERS')) return message.reply('I can not ban members because i don\'t have **ban members** perm');
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
@@ -111,7 +116,7 @@ client.on('message', async (message, args) => {
       if (member) {
 
         member
-        .kick({reason})
+        .ban({reason})
           .catch(err => console.log(err))
           .then(message.reply(`<a:check:850724870282674189>Successfully banned ${user.tag}<a:check:850724870282674189> reason is ${reason}`))
       }  
@@ -162,6 +167,7 @@ client.on('message', (message) => {
   const [command, input] = args;
 
   if (command === 'clear' || command === 'c') {
+    statcord.postCommand("clear", message.author.id);
     if (!message.member.hasPermission('MANAGE_MESSAGES')) {
       return message.channel
         .send(
@@ -218,6 +224,7 @@ client.on('message', (message) => {
 
 client.on('message', msg => {
 	if (msg.content === 'MCZ invite') {
+    statcord.postCommand("invite", msg.author.id);
     let addbot = new disbut.MessageButton()
         .setStyle('url')
         .setLabel('add 𝔪𝔠𝔷𝔤𝔬𝔡𝔭𝔦𝔤𝔤𝔶.𝓘𝓞 to your servers') 
@@ -226,7 +233,7 @@ client.on('message', msg => {
     .setTitle(`add ${client.user.tag}`)
     .setAuthor(client.user.tag, client.user.displayAvatarURL())
     .setDescription(`add ${client.user.tag} to your servers`)
-    .addField(`add ${client.user.tag}`, "[click here](https://top.gg/bot/599050023669334037)")
+    .addField(`add ${client.user.tag}`, "[click here](https://top.gg/bot/695922492027568176)")
 		msg.channel.startTyping();
     msg.channel.send(inviteembed, addbot);
     msg.channel.stopTyping();
@@ -242,6 +249,7 @@ client.on('message', async message => {
 
 client.on('message', msg => {
 	if (msg.content === 'MCZ ...') {
+    statcord.postCommand("...", msg.author.id);
     if (msg.author.bot) return;
     msg.channel.startTyping();
     msg.reply('......................................................');
@@ -251,6 +259,7 @@ client.on('message', msg => {
 
 client.on('message', msg => {
 	if (msg.content === 'MCZ website') {
+    statcord.postCommand("website", message.author.id);
     if (msg.author.bot) return;
     msg.reply('<a:check:850724870282674189>https://website.mczgodpiggy.repl.co<a:check:850724870282674189>');
   }
@@ -266,6 +275,7 @@ client.on('message', msg => {
 
 client.on('message', msg => {
 	if (msg.content === 'MCZ air') {
+    statcord.postCommand("air", msg.author.id);
     if (msg.author.bot) return;
     msg.channel.startTyping();
     msg.channel.send(
